@@ -55,14 +55,23 @@ git_dir = str(new_repo_path)
 print(f"on to the Git stuff")
 
 git("init")
+
+# create a "base" commit
 fill("_base.txt", randname())
 git("add .")
 git("commit -m base")
-git("switch -c feature")
-for _ in range(100):
+
+# create a new commit in mainline
+fill("_new.txt", randname())
+git("add .")
+git("commit -m new")
+
+# now put a deep structure off of the base commit
+git("switch -c feature HEAD^")
+for x in range(10000):
     some_chars = randname()
     fill(f"{some_chars}.txt", some_chars)
     git(f"add {some_chars}.txt")
     git(f"commit -qm {some_chars}")
-    print(".", end='', flush=bool(random.randint(0,19)))
+    print(".", end='', flush=bool(x % 20))
 print()
