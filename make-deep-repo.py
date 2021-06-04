@@ -1,6 +1,9 @@
 from pathlib import Path
+import random
 import subprocess
 import sys
+
+ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 def git(args):
     cmd = args.split()
@@ -14,6 +17,23 @@ def fill(filename, contents=None):
     else:
         with open(f"{git_dir}/{filename}", 'w') as f:
             f.write(contents)
+
+
+def randname():
+    return (
+          random.choice(ALPHABET)
+        + random.choice(ALPHABET)
+        + random.choice(ALPHABET)
+        + random.choice(ALPHABET)
+        + random.choice(ALPHABET)
+        + random.choice(ALPHABET)
+        + random.choice(ALPHABET)
+        + random.choice(ALPHABET)
+        + random.choice(ALPHABET)
+        + random.choice(ALPHABET)
+        + random.choice(ALPHABET)
+        + random.choice(ALPHABET)
+    )
 
 
 if sys.version_info.major < 3:
@@ -35,5 +55,14 @@ git_dir = str(new_repo_path)
 print(f"on to the Git stuff")
 
 git("init")
-fill("test1.txt")
-fill("test2.txt", "contents")
+fill("_base.txt", randname())
+git("add .")
+git("commit -m base")
+git("switch -c feature")
+for _ in range(100):
+    some_chars = randname()
+    fill(f"{some_chars}.txt", some_chars)
+    git(f"add {some_chars}.txt")
+    git(f"commit -qm {some_chars}")
+    print(".", end='', flush=bool(random.randint(0,19)))
+print()
